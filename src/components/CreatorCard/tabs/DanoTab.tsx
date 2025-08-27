@@ -12,6 +12,7 @@ const DanoTab = () => {
     if (value === "auxiliar") {
       setDano({ type: "auxiliar", cost: 0 });
     } else {
+      // Reseta a contagem de dados ao trocar o tipo para evitar confusão
       setDano({ type: value as any, diceCount: 0, cost: 0 });
     }
   };
@@ -28,7 +29,17 @@ const DanoTab = () => {
 
   const maxDice = grau !== null ? GRAU_OPTIONS[grau].max_dice : 0;
   const currentDice = dano?.diceCount || 0;
-  const diceType = grau !== null && grau > 5 ? "d12" : "d10";
+
+  // LÓGICA ATUALIZADA: Determina o tipo de dado correto
+  const diceType = (() => {
+    if (dano?.type === 'multiple') {
+      return 'd6';
+    }
+    if (grau !== null && grau > 5) {
+      return 'd12';
+    }
+    return 'd10';
+  })();
 
   return (
     <Card className="w-full bg-transparent border-none shadow-none text-white">
@@ -57,6 +68,7 @@ const DanoTab = () => {
         {(dano?.type === "single" || dano?.type === "multiple") && (
           <div className="space-y-4 pt-4 border-t border-zinc-800">
             <Label className="text-lg font-semibold flex justify-between items-center">
+              {/* MUDANÇA: Exibe o tipo de dado dinamicamente */}
               <span>Dados de Dano: {currentDice}{diceType}</span>
               <span className="text-sm text-zinc-400">Custo: {dano?.cost || 0} pontos</span>
             </Label>
