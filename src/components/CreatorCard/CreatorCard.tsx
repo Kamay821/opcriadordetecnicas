@@ -4,21 +4,23 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useCreatorStore } from "../../store/creatorStore";
 import { motion } from "framer-motion";
-import tabs from "./tabs";
 import { ArrowLeft } from "lucide-react";
+
+import tabs from "./tabs";
+
 
 interface CreatorCardProps {
   onBack: () => void;
 }
 
 const creatorTabs = [
-  { id: "grau", label: "Grau" },
-  { id: "tipo", label: "Tipo" },
-  { id: "alcance", label: "Alcance" },
-  { id: "dano", label: "Dano" },
-  { id: "efeitos", label: "Efeitos" },
-  { id: "reducoes", label: "Reduções" },
-  { id: "resumo", label: "Resumo" },
+  { id: "grau", label: "Grau", Component: tabs.GrauTab },
+  { id: "tipo", label: "Tipo", Component: tabs.TipoTab },
+  { id: "alcance", label: "Alcance", Component: tabs.AlcanceTab },
+  { id: "dano", label: "Dano", Component: tabs.DanoTab },
+  { id: "efeitos", label: "Efeitos", Component: tabs.EfeitosTab },
+  { id: "reducoes", label: "Reduções", Component: tabs.ReducoesTab },
+  { id: "resumo", label: "Resumo", Component: tabs.ResumoTab },
 ];
 
 const CreatorCard = ({ onBack }: CreatorCardProps) => {
@@ -27,10 +29,16 @@ const CreatorCard = ({ onBack }: CreatorCardProps) => {
 
   return (
     <Card className="w-full max-w-4xl h-auto max-h-[90vh] flex flex-col bg-black/50 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-2xl p-4 md:p-6 text-white">
-      <header className="flex justify-between items-center mb-6 flex-wrap gap-y-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">
-          Oficina de Técnicas
-        </h2>
+      {/* CABEÇALHO RESPONSIVO 
+          - flex-shrink-0 garante que o cabeçalho nunca seja comprimido pelo conteúdo abaixo.
+      */}
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-y-4 flex-shrink-0">
+        <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-zinc-400">
+            Oficina de Técnicas
+            </h2>
+            <p className="text-zinc-400 text-sm">Selecione as opções para montar sua habilidade.</p>
+        </div>
         <div className="flex gap-4 items-center flex-wrap-reverse justify-end w-full sm:w-auto">
           <Button
             variant="outline"
@@ -51,8 +59,16 @@ const CreatorCard = ({ onBack }: CreatorCardProps) => {
         </div>
       </header>
 
-      <Tabs defaultValue={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col flex-grow min-h-0">
-        <div className="w-full overflow-x-auto">
+      {/* CONTAINER DAS ABAS: Layout de coluna única 
+          - flex-grow faz este container ocupar todo o espaço vertical restante.
+          - min-h-0 é uma correção crucial para o flexbox que permite que o filho com overflow-y funcione corretamente.
+      */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col flex-grow min-h-0">
+        
+        {/* NAVEGAÇÃO DAS ABAS: Horizontal e rolável em todas as telas 
+            - flex-shrink-0 garante que a barra de abas nunca seja comprimida.
+        */}
+        <div className="w-full overflow-x-auto custom-scrollbar pb-2 flex-shrink-0">
           <TabsList className="relative inline-flex w-max bg-zinc-900/60 p-1.5 rounded-lg border border-zinc-800">
             {creatorTabs.map((tab) => (
               <TabsTrigger
@@ -62,7 +78,7 @@ const CreatorCard = ({ onBack }: CreatorCardProps) => {
               >
                 {activeTab === tab.id && (
                   <motion.div
-                    layoutId="active-creator-tab"
+                    layoutId="active-creator-tab-indicator"
                     className="absolute inset-0 bg-gradient-to-b from-zinc-700/50 to-zinc-800/50 border border-zinc-700 rounded-md z-0"
                     transition={{ type: "spring", stiffness: 400, damping: 40 }}
                   />
@@ -73,15 +89,13 @@ const CreatorCard = ({ onBack }: CreatorCardProps) => {
           </TabsList>
         </div>
 
-        {/* Aplicando a classe da barra de rolagem customizada */}
-        <div className="custom-scrollbar overflow-y-auto flex-grow min-h-0 mt-6 pr-2">
-            <TabsContent value="grau"><tabs.GrauTab /></TabsContent>
-            <TabsContent value="tipo"><tabs.TipoTab /></TabsContent>
-            <TabsContent value="alcance"><tabs.AlcanceTab /></TabsContent>
-            <TabsContent value="dano"><tabs.DanoTab /></TabsContent>
-            <TabsContent value="efeitos"><tabs.EfeitosTab /></TabsContent>
-            <TabsContent value="reducoes"><tabs.ReducoesTab /></TabsContent>
-            <TabsContent value="resumo"><tabs.ResumoTab /></TabsContent>
+        {/* CONTAINER DE CONTEÚDO: Ocupa o espaço restante e tem rolagem vertical */}
+        <div className="custom-scrollbar overflow-y-auto flex-grow min-h-0 mt-6 pr-2 -mr-2">
+            {creatorTabs.map(tab => (
+                <TabsContent key={tab.id} value={tab.id} className="focus-visible:ring-0 focus-visible:ring-offset-0 h-full">
+                    <tab.Component />
+                </TabsContent>
+            ))}
         </div>
       </Tabs>
     </Card>
