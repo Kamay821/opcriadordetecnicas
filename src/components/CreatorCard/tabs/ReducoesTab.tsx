@@ -115,7 +115,7 @@ const ReducoesTab = () => {
                 <div className="space-y-3">
                     <CounterReducao id="reduzir-area" label="Reduzir Área" value={getReducaoValue('reduzir-area')} onUpdate={(v) => handleUpdate('reduzir-area', v)} max={3} disabled={grau===null} cost={getReducaoStoredCost('reduzir-area')} />
                     <CounterReducao id="tecnica-debilitante" label="Técnica Debilitante" value={getReducaoValue('tecnica-debilitante')} onUpdate={(v) => handleUpdate('tecnica-debilitante', v)} max={2} disabled={grau===null} cost={getReducaoStoredCost('tecnica-debilitante')} />
-                    <CounterReducao id="tecnica-exaustiva" label="Técnica Exaustiva" value={getReducaoValue('tecnica-exaustiva')} onUpdate={(v) => handleUpdate('tecnica-exaustiva', v)} disabled={grau===null} cost={getReducaoStoredCost('tecnica-exaustiva')} />
+                    <CounterReducao id="tecnica-exaustiva" label="Técnica Exaustiva" value={getReducaoValue('tecnica-exaustiva')} onUpdate={(v) => handleUpdate('tecnica-exaustiva', v)} max={6} disabled={grau===null} cost={getReducaoStoredCost('tecnica-exaustiva')} />
                     <CounterReducao id="concentracao-crucial" label="Concentração Crucial" value={getReducaoValue('concentracao-crucial')} onUpdate={(v) => handleUpdate('concentracao-crucial', v)} disabled={grau===null} cost={getReducaoStoredCost('concentracao-crucial')} />
                 </div>
             </div>
