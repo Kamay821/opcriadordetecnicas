@@ -53,7 +53,8 @@ export const getEffectCost = (id: EffectId, grau: number | null, value: number =
       return 3 + (value - 1) * 2;
     case "criar-arma":
       if (value === 0) return 0;
-      return 1 + (value - 1) * 2;
+      if (value === 1) return 6; // Custo inicial para 2d8
+      return 6 + (value - 1) * 2; // +2 para cada d8 adicional
     case "adicionar-voo":
       if (value === 0) return 0;
       return 2 + (value - 1) * 1;
@@ -67,14 +68,13 @@ export const getEffectCost = (id: EffectId, grau: number | null, value: number =
     case "reducao-movimento-zero": return 2;
 
     // Modelo 6: Custo Dependente de Variável Externa (Grau)
-    case "adicionar-vantagem":
+    case "adicionar-vantagem": return 1;
     case "condicao-em-area":
     case "dano-continuo":
     case "dano-insistente":
       return Math.ceil(grau / 2);
     case "tecnica-rapida":
-    case "acerto-automatico":
-      return grau;
+    case "acerto-automatico": return 4;
 
     default:
       return 0;

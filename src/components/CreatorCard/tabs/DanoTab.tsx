@@ -1,9 +1,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Slider } from "@/components/ui/slider";
 import { GRAU_OPTIONS, DANO_BASE_COST } from "../../../lib/constants";
 import { useCreatorStore } from "../../../store/creatorStore";
+import { AnimatePresence, motion } from "framer-motion";
 
 const DanoTab = () => {
   const { grau, dano, setDano } = useCreatorStore();
@@ -12,8 +14,7 @@ const DanoTab = () => {
     if (value === "auxiliar") {
       setDano({ type: "auxiliar", cost: 0 });
     } else {
-      // Reseta a contagem de dados ao trocar o tipo para evitar confusão
-      setDano({ type: value as any, diceCount: 0, cost: 0 });
+      setDano({ type: value as "single" | "multiple", diceCount: 0, cost: 0, isSafeguard: false });
     }
   };
 
@@ -27,13 +28,25 @@ const DanoTab = () => {
     });
   };
 
+  const handleSafeguardToggle = (checked: boolean) => {
+    if (dano?.type === 'single') {
+        setDano({
+            ...dano,
+            isSafeguard: checked
+        });
+    }
+  };
+
   const maxDice = grau !== null ? GRAU_OPTIONS[grau].max_dice : 0;
   const currentDice = dano?.diceCount || 0;
 
-  // LÓGICA ATUALIZADA: Determina o tipo de dado correto
+  // LÓGICA ATUALIZADA: Adiciona a verificação para "Dano por Salvaguarda" (d8)
   const diceType = (() => {
     if (dano?.type === 'multiple') {
       return 'd6';
+    }
+    if (dano?.type === 'single' && dano.isSafeguard) {
+      return 'd8';
     }
     if (grau !== null && grau > 5) {
       return 'd12';
@@ -51,6 +64,7 @@ const DanoTab = () => {
       </CardHeader>
       <CardContent className="space-y-6 px-1">
         <RadioGroup onValueChange={handleTypeChange} value={dano?.type || ""} className="space-y-3">
+          {/* Opções de Radio Group */}
           <div className="flex items-center space-x-3 p-3 rounded-lg bg-zinc-900/50 border border-transparent has-[[data-state=checked]]:border-cyan-400/50 has-[[data-state=checked]]:bg-zinc-800/50 transition-all">
             <RadioGroupItem value="auxiliar" id="auxiliar" disabled={grau === null} className="border-zinc-600 data-[state=checked]:border-cyan-400 text-cyan-400"/>
             <Label htmlFor="auxiliar" className="text-base text-zinc-200 cursor-pointer">Técnica Auxiliar (Custo: 0)</Label>
@@ -65,10 +79,35 @@ const DanoTab = () => {
           </div>
         </RadioGroup>
 
+        {/* NOVA SEÇÃO: Checkbox de Dano por Salvaguarda */}
+        <AnimatePresence>
+        {dano?.type === "single" && (
+            <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="pl-2"
+            >
+                <div className="flex items-center space-x-3 p-3 rounded-lg bg-zinc-900/50 border border-zinc-800">
+                    <Checkbox
+                        id="salvaguarda"
+                        checked={dano.isSafeguard}
+                        onCheckedChange={(checked) => handleSafeguardToggle(checked as boolean)}
+                        disabled={grau === null}
+                        className="border-zinc-600 data-[state=checked]:bg-cyan-500 data-[state=checked]:border-cyan-500"
+                    />
+                    <div>
+                        <Label htmlFor="salvaguarda" className="text-base text-zinc-200 cursor-pointer">Dano por Salvaguarda</Label>
+                        <p className="text-sm text-zinc-400">A criatura alvo recebe metade do dano, caso seja bem-sucedida na Salvaguarda.</p>
+                    </div>
+                </div>
+            </motion.div>
+        )}
+        </AnimatePresence>
+
         {(dano?.type === "single" || dano?.type === "multiple") && (
           <div className="space-y-4 pt-4 border-t border-zinc-800">
             <Label className="text-lg font-semibold flex justify-between items-center">
-              {/* MUDANÇA: Exibe o tipo de dado dinamicamente */}
               <span>Dados de Dano: {currentDice}{diceType}</span>
               <span className="text-sm text-zinc-400">Custo: {dano?.cost || 0} pontos</span>
             </Label>

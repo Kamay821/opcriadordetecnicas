@@ -75,7 +75,7 @@ const OceanMenu = () => {
                         Criador de Técnicas
                       </h1>
                       <p className="text-lg text-zinc-300 mb-4 max-w-xl mx-auto drop-shadow-lg">
-                        Mergulhe na criação. Dê vida a técnicas lendárias com um sistema de pontos balanceado e intuitivo.
+                        Mergulhe na criação. Dê vida a técnicas lendárias com um sistema de pontos balanceado e intuitivo. V 1.5.7
                       </p>
                       <p className="text-xs text-zinc-600 mt-8 tracking-widest uppercase">- Sistema OP RPG -</p>
                     </TabsContent>

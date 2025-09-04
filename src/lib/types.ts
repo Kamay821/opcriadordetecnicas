@@ -77,6 +77,7 @@ export interface DamageOption {
   type: "auxiliar" | "single" | "multiple";
   diceCount?: number;
   cost: number;
+  isSafeguard?: boolean; // Esta linha foi adicionada
 }
 
 /**

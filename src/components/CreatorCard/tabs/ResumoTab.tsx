@@ -46,6 +46,9 @@ const ResumoTab = () => {
         if (dano.type === 'multiple') {
           return 'd6';
         }
+        if (dano?.type === 'single' && dano.isSafeguard) {
+        return 'd8';
+        }
         if (grau !== null && grau > 5) {
           return 'd12';
         }
