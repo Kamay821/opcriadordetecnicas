@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { CreatorState, CreatorActions, MultiOption, EffectId, ReducaoId, DamageOption } from "../lib/types";
+import type { CreatorState, CreatorActions, EffectId, ReducaoId } from "../lib/types";
 import { getEffectCost } from "../lib/pointsEngine";
 import { getReducaoCost } from "../lib/reducoesEngine";
 import { GRAU_OPTIONS } from "../lib/constants";
