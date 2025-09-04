@@ -3,41 +3,72 @@
  * Usar um union type previne erros de digitação e habilita o autocomplete.
  */
 export type EffectId =
-  // ... (tipos de Efeitos permanecem os mesmos)
+  // Modelo 0: Condição
+  | `adicionar-condicao-${string}`
+  | 'condicao-extra'
+
+  // Modelo 1: Custo Fixo
+  | 'controle-cirurgico'
+  | 'tecnica-dominada'
+  | 'ataque-cerco'
+  | 'ataques-multiplos'
+  | 'criar-lacaio'
+
+  // Modelo 2: Custo Linear
   | 'adicionar-empurrao'
-  | 'adicionar-vantagem'
   | 'aumentar-alcance'
   | 'aumentar-area'
   | 'aumentar-area-largura'
   | 'aumentar-cd'
-  | 'condicao-em-area'
-  | 'controle-cirurgico'
-  | 'tecnica-dominada'
-  | 'criar-lacaio'
-  | 'duracao-prolongada'
-  | 'tecnica-rapida'
-  | 'acerto-automatico'
-  | 'adicionar-critico-19-20'
-  | 'adicionar-critico-18-20'
-  | 'ataque-cerco'
-  | 'ataques-multiplos'
   | 'aumentar-acerto'
-  | 'aumentar-dano'
-  | 'criar-arma'
   | 'dano-adicional-dado'
-  | 'dano-continuo'
-  | 'dano-insistente'
   | 'adicionar-cura'
   | 'adicionar-pv-temporario'
-  | 'adicionar-voo'
   | 'aumentar-cr'
-  | 'aumentar-movimento-3m'
-  | 'aumentar-movimento-6m'
   | 'contencao-dano-coletivo'
   | 'contencao-dano-individual'
+
+  // Modelo 3: Custo Escalonado
+  | 'duracao-prolongada'
+  | 'aumentar-dano'
+  | 'criar-arma'
+  | 'adicionar-voo'
+
+  // Modelo 4: Custo Mapeado
+  | 'adicionar-critico-19-20'
+  | 'adicionar-critico-18-20'
+  | 'aumentar-movimento-3m'
+  | 'aumentar-movimento-6m'
   | 'reducao-movimento-metade'
-  | 'reducao-movimento-zero';
+  | 'reducao-movimento-zero'
+
+  // Modelo 6: Custo Dependente de Grau
+  | 'adicionar-vantagem'
+  | 'condicao-em-area'
+  | 'tecnica-rapida'
+  | 'acerto-automatico'
+  | 'dano-continuo'
+  | 'dano-insistente';
   
+/**
+ * Define todos os IDs possíveis para as reduções.
+ */
+export type ReducaoId =
+  // Modelo 1
+  | 'tecnica-demorada'
+  | 'tecnica-devoradora'
+  | 'tecnica-nao-ofensiva'
+  // Modelo 2
+  | 'reduzir-area'
+  | 'tecnica-debilitante'
+  | 'tecnica-exaustiva'
+  // Modelo 3
+  | 'concentracao-crucial'
+  // Modelo 5
+  | 'requisito-limitador'
+  | 'efeito-colateral'
+  | 'tecnica-dependente';
+
 /**
  * Interface base para uma opção selecionável.
  */
@@ -52,7 +83,7 @@ export interface Option {
  * e um custo em pontos. Usada para Efeitos e Reduções.
  */
 export interface MultiOption extends Option {
-  id: EffectId | ReducaoId | string; // Atualizado para incluir ReducaoId
+  id: EffectId | ReducaoId | string;
   value?: number;
   cost: number;
   max?: number;
@@ -70,7 +101,6 @@ export interface DamageOption {
 
 /**
  * Interface para o estado global do Zustand store.
- * NOVO: Adicionado reducaoTotal e limiteReducaoExcedido.
  */
 export interface CreatorState {
   grau: number | null;
@@ -103,19 +133,3 @@ export interface CreatorActions {
   resetState: () => void;
   recalculatePoints: () => void;
 }
-
-export type ReducaoId =
-  // Modelo 1
-  | 'tecnica-demorada'
-  | 'tecnica-devoradora'
-  | 'tecnica-nao-ofensiva'
-  // Modelo 2
-  | 'reduzir-area'
-  | 'tecnica-debilitante'
-  | 'tecnica-exaustiva'
-  // Modelo 3
-  | 'concentracao-crucial'
-  // Modelo 5
-  | 'requisito-limitador'
-  | 'efeito-colateral'
-  | 'tecnica-dependente';
